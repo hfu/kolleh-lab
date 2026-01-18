@@ -75,7 +75,7 @@ map.on('load', () => {
         collapsed: true,
         pointSize: 2,
         colorScheme: 'elevation',
-        pickable: true,
+        pickable: false,
         autoZoom: true
     });
     
