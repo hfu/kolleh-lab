@@ -10,10 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "maplibre-gl": "^latest",
+    "maplibre-gl": "^4.0.0",
     "maplibre-gl-lidar": "^0.7.0"
   },
   "devDependencies": {
-    "vite": "^latest"
+    "vite": "^5.0.0"
   }
 }
