@@ -10,8 +10,8 @@ const map = new maplibregl.Map({
         'version': 8,
         'glyphs': 'https://hfu.github.io/hiker/vendor/basemaps-assets/fonts/{fontstack}/{range}.pbf',
         'sources': {
-            'terrarium': {
-                'type': 'raster-dem',
+            'mapterhorn': {
+                'type': 'raster',
                 'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
                 'tileSize': 512,
                 'minzoom': 0,
@@ -40,16 +40,11 @@ const map = new maplibregl.Map({
                 }
             },
             {
-                'id': 'terrarium-hillshade',
-                'type': 'hillshade',
-                'source': 'terrarium',
+                'id': 'mapterhorn-hillshade',
+                'type': 'raster',
+                'source': 'mapterhorn',
                 'paint': {
-                    'hillshade-shadow-color': '#473B24',
-                    'hillshade-highlight-color': '#F3EDE9',
-                    'hillshade-accent-color': '#0F0E0C',
-                    'hillshade-illumination-direction': 335,
-                    'hillshade-illumination-anchor': 'viewport',
-                    'hillshade-exaggeration': 0.3
+                    'raster-opacity': 0.7
                 }
             },
             {
@@ -57,7 +52,7 @@ const map = new maplibregl.Map({
                 'type': 'raster',
                 'source': 'uav-imagery',
                 'paint': {
-                    'raster-opacity': 0.75
+                    'raster-opacity': 0.85
                 }
             },
             {
@@ -76,17 +71,13 @@ const map = new maplibregl.Map({
                     'text-halo-width': 1
                 }
             }
-        ],
-        'terrain': {
-            'source': 'terrarium',
-            'exaggeration': 1.0
-        }
+        ]
     },
     container: 'map',
     hash: 'map',
     center: [-13.248147, 8.466554],
     zoom: 12,
-    pitch: 45,
+    pitch: 30,
     bearing: 0,
     maxPitch: 85
 });
