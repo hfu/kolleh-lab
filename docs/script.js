@@ -15,7 +15,7 @@ const map = new maplibregl.Map({
                 'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
                 'tileSize': 512,
                 'minzoom': 0,
-                'maxzoom': 14
+                'maxzoom': 12
             }
         },
         'layers': [
@@ -47,7 +47,7 @@ const map = new maplibregl.Map({
         ]
     },
     center: [-13.248147, 8.466554],
-    zoom: 13,
+    zoom: 12,
     pitch: 0,
     bearing: 0
 });
@@ -64,16 +64,13 @@ map.addControl(new maplibregl.FullscreenControl());
 map.on('load', () => {
     console.log('Map loaded. Initializing COPC visualization...');
     
-    // Add COPC layer using maplibre-gl-lidar
-    try {
-        const copcLayer = new maplibreGlLidar.MaplibreGlLidar({
-            url: 'https://tunnel.optgeo.org/kolleh_v.copc.laz',
-            colorScheme: 'elevation',
-            pointSize: 2.0
-        });
-        map.addLayer(copcLayer.getLayer());
-        console.log('COPC layer added successfully!');
-    } catch (err) {
-        console.warn('COPC layer initialization:', err.message);
-    }
-});
+    // Debug: Check available globals
+    console.log('Available globals:', {
+        maplibreGlLidar: typeof window.maplibreGlLidar,
+        MaplibreGlLidar: typeof window.MaplibreGlLidar,
+        mlgl: typeof window.mlgl
+    });
+    
+    // Add COPC layer using maplibre-gl-lidar (TODO: investigate correct API)
+    // For now, COPC layer initialization is deferred pending library API confirmation
+    console.log('COPC visualization pending maplibre-gl-lidar API verification');
