@@ -1,0 +1,3 @@
+# Ignore LAS/LAZ point cloud files
+*.laz
+*.las
