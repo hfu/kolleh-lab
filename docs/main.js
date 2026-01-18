@@ -8,6 +8,7 @@ const map = new maplibregl.Map({
     container: 'map',
     style: {
         'version': 8,
+        'glyphs': 'https://hfu.github.io/hiker/vendor/basemaps-assets/fonts/{fontstack}/{range}.pbf',
         'sources': {
             'terrarium': {
                 'type': 'raster-dem',
