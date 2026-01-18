@@ -40,14 +40,6 @@ const map = new maplibregl.Map({
                 }
             },
             {
-                'id': 'mapterhorn-hillshade',
-                'type': 'raster',
-                'source': 'mapterhorn',
-                'paint': {
-                    'raster-opacity': 0.7
-                }
-            },
-            {
                 'id': 'uav-imagery',
                 'type': 'raster',
                 'source': 'uav-imagery',
@@ -56,10 +48,10 @@ const map = new maplibregl.Map({
                 }
             },
             {
-                'id': 'protomaps-labels',
+                'id': 'protomaps-places',
                 'type': 'symbol',
                 'source': 'protomaps',
-                'source-layer': 'labels',
+                'source-layer': 'places',
                 'layout': {
                     'text-field': ['get', 'name'],
                     'text-size': 12,
