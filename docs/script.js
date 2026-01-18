@@ -74,3 +74,4 @@ map.on('load', () => {
     // Add COPC layer using maplibre-gl-lidar (TODO: investigate correct API)
     // For now, COPC layer initialization is deferred pending library API confirmation
     console.log('COPC visualization pending maplibre-gl-lidar API verification');
+});
