@@ -10,8 +10,8 @@ const map = new maplibregl.Map({
         'version': 8,
         'glyphs': 'https://hfu.github.io/hiker/vendor/basemaps-assets/fonts/{fontstack}/{range}.pbf',
         'sources': {
-            'mapterhorn': {
-                'type': 'raster',
+            'terrarium': {
+                'type': 'raster-dem',
                 'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
                 'tileSize': 512,
                 'minzoom': 0,
@@ -40,14 +40,6 @@ const map = new maplibregl.Map({
                 }
             },
             {
-                'id': 'mapterhorn-hillshade',
-                'type': 'raster',
-                'source': 'mapterhorn',
-                'paint': {
-                    'raster-opacity': 0.7
-                }
-            },
-            {
                 'id': 'uav-imagery',
                 'type': 'raster',
                 'source': 'uav-imagery',
@@ -71,14 +63,19 @@ const map = new maplibregl.Map({
                     'text-halo-width': 1
                 }
             }
-        ]
+        ],
+        'terrain': {
+            'source': 'terrarium',
+            'exaggeration': 1.5
+        }
     },
     container: 'map',
     hash: 'map',
     center: [-13.248147, 8.466554],
     zoom: 12,
-    pitch: 30,
-    bearing: 0
+    pitch: 45,
+    bearing: 0,
+    maxPitch: 85
 });
 
 // Add navigation controls
@@ -100,7 +97,9 @@ map.on('load', () => {
         pointSize: 2,
         colorScheme: 'elevation',
         pickable: false,
-        autoZoom: true
+        autoZoom: true,
+        zOffsetEnabled: true,
+        zOffset: 0
     });
     
     map.addControl(lidarControl, 'top-right');
