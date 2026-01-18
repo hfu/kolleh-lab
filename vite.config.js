@@ -1,10 +1,18 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  root: './docs',
+  root: './src',
+  base: './',
   build: {
-    outDir: '../dist',
+    outDir: '../docs',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]'
+      }
+    }
   },
   server: {
     port: 3000,

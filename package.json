@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "maplibre-gl": "^4.0.0",
-    "maplibre-gl-lidar": "^0.7.0"
+    "maplibre-gl-lidar": "^0.7.0",
+    "maplibre-gl-layer-control": "^0.9.0"
   },
   "devDependencies": {
     "vite": "^5.0.0"

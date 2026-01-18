@@ -1,7 +1,9 @@
 import maplibregl from 'maplibre-gl';
 import { LidarControl } from 'maplibre-gl-lidar';
+import { LayerControl } from 'maplibre-gl-layer-control';
 import 'maplibre-gl-lidar/style.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import 'maplibre-gl-layer-control/style.css';
 
 // Initialize map
 const map = new maplibregl.Map({
@@ -22,7 +24,8 @@ const map = new maplibregl.Map({
                 'tiles': ['https://tunnel.optgeo.org/martin/freetown_2025-10-22_nearest/{z}/{x}/{y}'],
                 'tileSize': 512,
                 'minzoom': 0,
-                'maxzoom': 16
+                'maxzoom': 21,
+                'attribution': 'Drone imagery contributors (tbc)'
             },
             'protomaps': {
                 'type': 'vector',
@@ -75,7 +78,8 @@ const map = new maplibregl.Map({
     zoom: 12,
     pitch: 30,
     bearing: 0,
-    maxPitch: 85
+    maxPitch: 85,
+    customAttribution: 'Point cloud contributors (tbc)'
 });
 
 // Add navigation controls
@@ -86,67 +90,33 @@ map.addControl(new maplibregl.ScaleControl({
 }));
 map.addControl(new maplibregl.FullscreenControl());
 
-// Create custom layer toggle control
-class LayerToggleControl {
-    onAdd(map) {
-        this.map = map;
-        this.container = document.createElement('div');
-        this.container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
-        this.container.style.backgroundColor = '#fff';
-        this.container.style.borderRadius = '4px';
-        this.container.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.1)';
-        this.container.style.padding = '10px';
-        this.container.style.fontSize = '12px';
-        
-        const label = document.createElement('div');
-        label.textContent = 'Layers';
-        label.style.fontWeight = 'bold';
-        label.style.marginBottom = '8px';
-        this.container.appendChild(label);
-        
-        const layers = [
-            { id: 'uav-imagery', label: 'UAV Imagery' },
-            { id: 'protomaps-places', label: 'Place Names' }
-        ];
-        
-        layers.forEach(layer => {
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = `toggle-${layer.id}`;
-            checkbox.checked = true;
-            
-            const layerLabel = document.createElement('label');
-            layerLabel.style.display = 'block';
-            layerLabel.style.marginBottom = '6px';
-            layerLabel.style.cursor = 'pointer';
-            layerLabel.appendChild(checkbox);
-            layerLabel.appendChild(document.createTextNode(` ${layer.label}`));
-            
-            checkbox.addEventListener('change', (e) => {
-                const visibility = e.target.checked ? 'visible' : 'none';
-                map.setLayoutProperty(layer.id, 'visibility', visibility);
-            });
-            
-            this.container.appendChild(layerLabel);
-        });
-        
-        return this.container;
-    }
-    
-    onRemove() {
-        this.container.parentNode.removeChild(this.container);
-        this.map = undefined;
-    }
-}
+// Add layer control
+map.addControl(new LayerControl({
+    layers: [
+        { id: 'uav-imagery', title: 'UAV Imagery' },
+        { id: 'protomaps-places', title: 'Place Names' }
+    ]
+}), 'top-left');
 
-map.addControl(new LayerToggleControl(), 'top-left');
+// Global reference for LiDAR control
+let lidarControl;
+let lidarLoaded = false;
 
 // Log map ready and add COPC layer
 map.on('load', () => {
     console.log('Map loaded. Initializing COPC visualization...');
     
+    // Add custom terrain source for mapterhorn before LidarControl
+    map.addSource('terrain-dem', {
+        'type': 'raster-dem',
+        'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
+        'encoding': 'terrarium',
+        'tileSize': 512,
+        'maxzoom': 12
+    });
+    
     // Add COPC layer using maplibre-gl-lidar
-    const lidarControl = new LidarControl({
+    lidarControl = new LidarControl({
         title: 'LiDAR Viewer',
         collapsed: true,
         pointSize: 2,
@@ -154,7 +124,10 @@ map.on('load', () => {
         pickable: false,
         autoZoom: true,
         zOffsetEnabled: true,
-        zOffset: 0
+        zOffset: -18,
+        autoZOffset: false,
+        terrainEnabled: true,
+        terrainExaggeration: 1.0
     });
     
     map.addControl(lidarControl, 'top-right');
@@ -163,8 +136,35 @@ map.on('load', () => {
     lidarControl.loadPointCloud(
         'https://tunnel.optgeo.org/kolleh_v.copc.laz'
     ).then(() => {
+        lidarLoaded = true;
         console.log('COPC point cloud loaded successfully!');
+        // Apply Z offset after loading
+        lidarControl.setZOffset(-18);
+        console.log('Z offset set to -18m (geoid height correction)');
+        // Update checkbox state
+        const checkbox = document.getElementById('toggle-lidar');
+        if (checkbox) checkbox.checked = true;
     }).catch((err) => {
         console.error('Failed to load COPC point cloud:', err);
     });
 });
+
+// Export toggleLidar function for LayerToggleControl
+window.toggleLidar = function(checked) {
+    if (!lidarControl) return;
+    
+    if (checked && !lidarLoaded) {
+        lidarControl.loadPointCloud(
+            'https://tunnel.optgeo.org/kolleh_v.copc.laz'
+        ).then(() => {
+            lidarLoaded = true;
+            console.log('LiDAR toggled on');
+        }).catch((err) => {
+            console.error('Failed to load LiDAR:', err);
+        });
+    } else if (!checked && lidarLoaded) {
+        lidarControl.unloadPointCloud();
+        lidarLoaded = false;
+        console.log('LiDAR toggled off');
+    }
+};
