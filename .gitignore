@@ -1,3 +1,17 @@
 # Ignore LAS/LAZ point cloud files
 *.laz
 *.las
+# npm dependencies and build output
+node_modules/
+dist/
+.vite/
+
+# npm related
+package-lock.json
+npm-debug.log*
+.npm
+
+# OS files
+.DS_Store
+.env.local
+.env.*.local
