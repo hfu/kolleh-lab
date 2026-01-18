@@ -52,15 +52,19 @@ const map = new maplibregl.Map({
                 'type': 'symbol',
                 'source': 'protomaps',
                 'source-layer': 'places',
+                'minzoom': 1,
                 'layout': {
                     'text-field': ['get', 'name'],
-                    'text-size': 12,
-                    'text-offset': [0, 1]
+                    'text-size': ['interpolate', ['linear'], ['zoom'], 1, 10, 15, 16],
+                    'text-font': ['Noto Sans Regular'],
+                    'text-max-width': 8,
+                    'text-anchor': 'center'
                 },
                 'paint': {
-                    'text-color': '#000',
+                    'text-color': '#222',
                     'text-halo-color': '#fff',
-                    'text-halo-width': 1
+                    'text-halo-width': 1,
+                    'text-opacity': 1
                 }
             }
         ]
@@ -81,6 +85,61 @@ map.addControl(new maplibregl.ScaleControl({
     unit: 'metric'
 }));
 map.addControl(new maplibregl.FullscreenControl());
+
+// Create custom layer toggle control
+class LayerToggleControl {
+    onAdd(map) {
+        this.map = map;
+        this.container = document.createElement('div');
+        this.container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+        this.container.style.backgroundColor = '#fff';
+        this.container.style.borderRadius = '4px';
+        this.container.style.boxShadow = '0 0 0 2px rgba(0,0,0,0.1)';
+        this.container.style.padding = '10px';
+        this.container.style.fontSize = '12px';
+        
+        const label = document.createElement('div');
+        label.textContent = 'Layers';
+        label.style.fontWeight = 'bold';
+        label.style.marginBottom = '8px';
+        this.container.appendChild(label);
+        
+        const layers = [
+            { id: 'uav-imagery', label: 'UAV Imagery' },
+            { id: 'protomaps-places', label: 'Place Names' }
+        ];
+        
+        layers.forEach(layer => {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `toggle-${layer.id}`;
+            checkbox.checked = true;
+            
+            const layerLabel = document.createElement('label');
+            layerLabel.style.display = 'block';
+            layerLabel.style.marginBottom = '6px';
+            layerLabel.style.cursor = 'pointer';
+            layerLabel.appendChild(checkbox);
+            layerLabel.appendChild(document.createTextNode(` ${layer.label}`));
+            
+            checkbox.addEventListener('change', (e) => {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty(layer.id, 'visibility', visibility);
+            });
+            
+            this.container.appendChild(layerLabel);
+        });
+        
+        return this.container;
+    }
+    
+    onRemove() {
+        this.container.parentNode.removeChild(this.container);
+        this.map = undefined;
+    }
+}
+
+map.addControl(new LayerToggleControl(), 'top-left');
 
 // Log map ready and add COPC layer
 map.on('load', () => {
