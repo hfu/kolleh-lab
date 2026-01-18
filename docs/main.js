@@ -9,18 +9,25 @@ const map = new maplibregl.Map({
     style: {
         'version': 8,
         'sources': {
+            'terrarium': {
+                'type': 'raster-dem',
+                'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
+                'tileSize': 512,
+                'minzoom': 0,
+                'maxzoom': 12
+            },
+            'uav-imagery': {
+                'type': 'raster',
+                'tiles': ['https://tunnel.optgeo.org/martin/freetown_2025-10-22_nearest/{z}/{x}/{y}'],
+                'tileSize': 512,
+                'minzoom': 0,
+                'maxzoom': 16
+            },
             'protomaps': {
                 'type': 'vector',
                 'tiles': ['https://tunnel.optgeo.org/martin/protomaps-basemap/{z}/{x}/{y}'],
                 'minzoom': 0,
                 'maxzoom': 14
-            },
-            'mapterhorn': {
-                'type': 'raster',
-                'tiles': ['https://tunnel.optgeo.org/martin/mapterhorn/{z}/{x}/{y}'],
-                'tileSize': 512,
-                'minzoom': 0,
-                'maxzoom': 12
             }
         },
         'layers': [
@@ -28,32 +35,42 @@ const map = new maplibregl.Map({
                 'id': 'background',
                 'type': 'background',
                 'paint': {
-                    'background-color': '#ddd'
+                    'background-color': '#87CEEB'
                 }
             },
             {
-                'id': 'mapterhorn-layer',
+                'id': 'uav-imagery',
                 'type': 'raster',
-                'source': 'mapterhorn',
+                'source': 'uav-imagery',
                 'paint': {
-                    'raster-opacity': 0.85
+                    'raster-opacity': 0.9
                 }
             },
             {
-                'id': 'protomaps-layer',
-                'type': 'fill',
+                'id': 'protomaps-labels',
+                'type': 'symbol',
                 'source': 'protomaps',
-                'source-layer': 'buildings',
+                'source-layer': 'labels',
+                'layout': {
+                    'text-field': ['get', 'name'],
+                    'text-size': 12,
+                    'text-offset': [0, 1]
+                },
                 'paint': {
-                    'fill-color': '#888',
-                    'fill-opacity': 0.3
+                    'text-color': '#000',
+                    'text-halo-color': '#fff',
+                    'text-halo-width': 1
                 }
             }
-        ]
+        ],
+        'terrain': {
+            'source': 'terrarium',
+            'exaggeration': 1.5
+        }
     },
     center: [-13.248147, 8.466554],
     zoom: 12,
-    pitch: 0,
+    pitch: 45,
     bearing: 0
 });
 
