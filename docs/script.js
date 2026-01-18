@@ -54,6 +54,11 @@ const map = new maplibregl.Map({
 
 // Add navigation controls
 map.addControl(new maplibregl.NavigationControl());
+map.addControl(new maplibregl.ScaleControl({
+    maxWidth: 200,
+    unit: 'metric'
+}));
+map.addControl(new maplibregl.FullscreenControl());
 
 // Log map ready and add COPC layer
 map.on('load', () => {
