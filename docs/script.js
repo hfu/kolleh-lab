@@ -55,7 +55,20 @@ const map = new maplibregl.Map({
 // Add navigation controls
 map.addControl(new maplibregl.NavigationControl());
 
-// Log map ready
+// Log map ready and add COPC layer
 map.on('load', () => {
-    console.log('Map loaded. Ready for enhancements!');
+    console.log('Map loaded. Initializing COPC visualization...');
+    
+    // Add COPC layer using maplibre-gl-lidar
+    try {
+        const copcLayer = new maplibreGlLidar.MaplibreGlLidar({
+            url: 'https://tunnel.optgeo.org/kolleh_v.copc.laz',
+            colorScheme: 'elevation',
+            pointSize: 2.0
+        });
+        map.addLayer(copcLayer.getLayer());
+        console.log('COPC layer added successfully!');
+    } catch (err) {
+        console.warn('COPC layer initialization:', err.message);
+    }
 });
