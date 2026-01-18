@@ -1,0 +1,19 @@
+{
+  "name": "kolleh-lab",
+  "version": "1.0.0",
+  "description": "Kolleh 3D visualization with MapLibre GL JS and COPC LiDAR",
+  "type": "module",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "maplibre-gl": "^latest",
+    "maplibre-gl-lidar": "^0.7.0"
+  },
+  "devDependencies": {
+    "vite": "^latest"
+  }
+}

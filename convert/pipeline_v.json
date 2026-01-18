@@ -1,0 +1,23 @@
+{
+  "pipeline": [
+    {
+      "type": "readers.las",
+      "filename": "Kolleh-Town-06-04-2024-georeferenced_model.laz"
+    },
+    {
+      "type": "filters.sample",
+      "radius": 0.3
+    },
+    {
+      "type": "writers.copc",
+      "filename": "kolleh_v.copc.laz",
+      "offset_x": "auto",
+      "offset_y": "auto",
+      "offset_z": "auto",
+      "scale_x": 0.05,
+      "scale_y": 0.05,
+      "scale_z": 0.02,
+      "forward": "all"
+    }
+  ]
+}

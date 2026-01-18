@@ -1,3 +1,8 @@
+import maplibregl from 'maplibre-gl';
+import { LidarControl } from 'maplibre-gl-lidar';
+import 'maplibre-gl-lidar/style.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
+
 // Initialize map
 const map = new maplibregl.Map({
     container: 'map',
@@ -64,14 +69,24 @@ map.addControl(new maplibregl.FullscreenControl());
 map.on('load', () => {
     console.log('Map loaded. Initializing COPC visualization...');
     
-    // Debug: Check available globals
-    console.log('Available globals:', {
-        maplibreGlLidar: typeof window.maplibreGlLidar,
-        MaplibreGlLidar: typeof window.MaplibreGlLidar,
-        mlgl: typeof window.mlgl
+    // Add COPC layer using maplibre-gl-lidar
+    const lidarControl = new LidarControl({
+        title: 'LiDAR Viewer',
+        collapsed: true,
+        pointSize: 2,
+        colorScheme: 'elevation',
+        pickable: true,
+        autoZoom: true
     });
     
-    // Add COPC layer using maplibre-gl-lidar (TODO: investigate correct API)
-    // For now, COPC layer initialization is deferred pending library API confirmation
-    console.log('COPC visualization pending maplibre-gl-lidar API verification');
+    map.addControl(lidarControl, 'top-right');
+    
+    // Load COPC point cloud
+    lidarControl.loadPointCloud(
+        'https://tunnel.optgeo.org/kolleh_v.copc.laz'
+    ).then(() => {
+        console.log('COPC point cloud loaded successfully!');
+    }).catch((err) => {
+        console.error('Failed to load COPC point cloud:', err);
+    });
 });

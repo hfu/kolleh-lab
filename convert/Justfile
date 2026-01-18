@@ -1,0 +1,4 @@
+convert:
+  #pdal pipeline pipeline.json
+  pdal pipeline pipeline_v.json
+
