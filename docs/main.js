@@ -40,11 +40,24 @@ const map = new maplibregl.Map({
                 }
             },
             {
+                'id': 'terrarium-hillshade',
+                'type': 'hillshade',
+                'source': 'terrarium',
+                'paint': {
+                    'hillshade-shadow-color': '#473B24',
+                    'hillshade-highlight-color': '#F3EDE9',
+                    'hillshade-accent-color': '#0F0E0C',
+                    'hillshade-illumination-direction': 335,
+                    'hillshade-illumination-anchor': 'viewport',
+                    'hillshade-exaggeration': 0.3
+                }
+            },
+            {
                 'id': 'uav-imagery',
                 'type': 'raster',
                 'source': 'uav-imagery',
                 'paint': {
-                    'raster-opacity': 0.85
+                    'raster-opacity': 0.75
                 }
             },
             {
@@ -66,7 +79,7 @@ const map = new maplibregl.Map({
         ],
         'terrain': {
             'source': 'terrarium',
-            'exaggeration': 1.5
+            'exaggeration': 1.0
         }
     },
     container: 'map',
